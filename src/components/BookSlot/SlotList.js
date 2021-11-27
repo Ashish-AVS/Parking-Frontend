@@ -1,5 +1,6 @@
-import React from 'react'
-/* This example requires Tailwind CSS v2.0+ */
+import React, {useState, useEffect} from 'react'
+import axios from 'axios';
+import { ACCESS_TOKEN } from '../../constants';
 const people = [
   {
     name: "Jane Cooper",
@@ -49,7 +50,32 @@ const people = [
   // More people...
 ];
 
-export default function Example() {
+export default function SlotList({slots=[]}) {
+  const [showData, setShowData] = useState([]);
+  console.log(showData);
+  useEffect(()=> {
+    
+    axios.get("http://localhost:8080/parking/slot", {headers: {"Authorization": `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`}})
+    .then(res => {
+        res.data.map(slot => {
+          if(!!slots[slot.id]){
+            setShowData(prevState => {
+              const newArr = [...prevState];
+               newArr.push(slot);
+               return newArr;
+            });
+          }
+          else{
+            setShowData(prevState => {
+              const newArr = [...prevState];
+               return newArr.filter(finding => finding.id!==slot.id);
+            });
+          }
+        })
+        console.log(res)
+    })
+    
+  }, [slots]);
   return (
     <div className="flex flex-col">
       <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -88,6 +114,54 @@ export default function Example() {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
+                {showData && showData.map(slot => (
+                    <tr key={slot.id}>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center">
+                        <div className="flex-shrink-0 h-10 w-10">
+                          <img
+                            className="h-10 w-10 rounded-full"
+                            // src={person.image}
+                            src="#"
+                            alt=""
+                          />
+                        </div>
+                        <div className="ml-4">
+                          <div className="text-sm font-medium text-gray-900">
+                            {slot.id}
+                          </div>
+                          <div className="text-sm text-gray-500">
+                            {slot.id}
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-900">
+                        {/* {person.title} */} ASSS
+                      </div>
+                      <div className="text-sm text-gray-500">
+                        {/* {person.department} */}ASSS
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                        {/* Active */} ASSS 
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {/* {person.role} */} ASSS
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <a
+                        href="#"
+                        className="text-indigo-600 hover:text-indigo-900"
+                      >
+                        Book Now
+                      </a>
+                    </td>
+                  </tr>
+                ))}
                 {people.map((person) => (
                   <tr key={person.email}>
                     <td className="px-6 py-4 whitespace-nowrap">

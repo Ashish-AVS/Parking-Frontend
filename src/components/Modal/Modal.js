@@ -15,12 +15,6 @@ export default function Modal() {
     e.preventDefault();
     console.log("Submitted");
     const cform = formRef.current;
-    // setSubmitData({
-    //   name: cform["workerName"].value,
-    //   email: cform["workerEmail"].value,
-    //   phoneNumber: cform["phoneNumber"].value,
-    //   passwod: cform["workerPassword"].value
-    // });
     const headers = {
       "Access-Control-Allow-Origin": "*",
       "Content-Type": "application/json",
