@@ -3,6 +3,7 @@ import React, { Fragment, useRef, useState, useEffect } from "react";
 import axios from "axios";
 import { Dialog, Transition } from "@headlessui/react";
 import { ExclamationIcon } from "@heroicons/react/outline";
+import { ACCESS_TOKEN } from "../../constants";
 
 export default function Modal() {
   const [open, setOpen] = useState(true);
@@ -20,11 +21,20 @@ export default function Modal() {
     //   phoneNumber: cform["phoneNumber"].value,
     //   passwod: cform["workerPassword"].value
     // });
-    axios.post("http://localhost:8080/worker/add", {
+    const headers = {
+      "Access-Control-Allow-Origin": "*",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`,
+    };
+    const data = {
       workerName: cform["workerName"].value,
-        email: cform["workerEmail"].value,
-        phoneNumber: cform["phoneNumber"].value
-    }).then(res => alert("Worker Added Successfully")).catch(error => console.log(error));
+      email: cform["workerEmail"].value,
+      phoneNumber: cform["phoneNumber"].value,
+    };
+    axios
+      .post("http://localhost:8080/worker/add", data, { headers: headers })
+      .then((res) => console.log(res))
+      .catch((error) => console.log(error));
   };
 
   return (

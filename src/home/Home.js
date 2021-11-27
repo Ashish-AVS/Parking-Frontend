@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './Home.css';
 
 class Home extends Component {
+    
     render() {
         return (
             <div className="home-container">
@@ -21,7 +22,7 @@ class Home extends Component {
                             <div className="graf-circle"></div>
                         </div>
                     </div>
-                    <h1 className="home-title">Spring Boot React OAuth2 Social Login Demo</h1>
+                    <h1 className="home-title">Welcome User</h1>
                 </div>
             </div>
         )

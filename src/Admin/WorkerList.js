@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Modal from "../components/Modal/Modal";
+import { ACCESS_TOKEN } from "../constants";
 
 const WorkerList = () => {
   const [workers, setWorkers] = useState();
@@ -14,6 +15,7 @@ const WorkerList = () => {
       headers: {
         "Access-Control-Allow-Origin": "*",
         "Content-Type": "application/json",
+        "Authorization": `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`
       },
       credentials: "same-origin",
       url: "http://localhost:8080/worker",
@@ -28,14 +30,14 @@ const WorkerList = () => {
   }
   const deleteWorkerHandler = (id = -1) => {
     axios
-      .delete(`http://localhost:8080/worker/${id}`)
+      .delete(`http://localhost:8080/worker/${id}`, {headers: {"Authorization": `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`}})
       .then(() => alert("Worker Deleted Successfully!"));
   };
 
   const editWorkerHandler = (id = -1) => {
     alert("WORK IN PROGRESS")
     axios
-      .put(`http://localhost:8080/worker/${id}`)
+      .put(`http://localhost:8080/worker/${id}`, {headers: {"Authorization": `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`}})
       .then(() => alert("Worker Deleted Successfully!"));
   };
 

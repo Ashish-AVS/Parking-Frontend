@@ -1,5 +1,5 @@
 /* This example requires Tailwind CSS v2.0+ */
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect } from "react";
 import { Popover, Transition } from "@headlessui/react";
 import { MenuIcon, XIcon } from "@heroicons/react/outline";
 import { FacebookLoginButton } from "react-social-login-buttons";
@@ -7,6 +7,7 @@ import { GoogleLoginButton } from "react-social-login-buttons";
 import { Link } from "react-router-dom";
 
 export default function HomePage() {
+
   return (
     <div className="relative bg-white overflow-hidden">
       <div className="max-w-7xl mx-auto">

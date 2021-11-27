@@ -1,17 +1,41 @@
 import { MenuIcon, XIcon } from "@heroicons/react/outline";
 import { Popover, Transition } from "@headlessui/react";
-import { Fragment } from "react";
+import React, { Fragment } from "react";
 import { Link } from "react-router-dom";
 
+const NavBar = (props) => {
+  let navigation = [];
+  
+  if (props.role) {
+  if (props.role.role === "WORKER") {
+    navigation = [{ name: "Worker Dashboard", href: "/worker-dashboard" }];
+    console.log('I AM IN again')
+  }
+  if (props.role.role === "ADMIN") {
+    navigation = [
+      { name: "Worker List", href: "/worker-list" },
+      { name: "Admin Dashboard", href: "/admin-dashboard" },
+      { name: "Parking Spaces", href: "/parking-spaces" },
+    ];
+  }
+  else{
+    navigation = [
+      { name: "Dashboard", href: "/user-dashboard" },
+      { name: "Book a Slot", href: "/book-slot" },
+      { name: "Profile", href: "/profile" },
 
-const NavBar = () => {
-  const navigation = [
+    ];
+  }
+  } 
+
+  
+
+  const unSignedNav = [
+    // { name: "Login", href: "/login" },
     { name: "Sign Up", href: "/signup" },
-    { name: "Dashboard", href: "/user-dashboard" },
-    { name: "Book a Slot", href: "/book-slot" },
   ];
   return (
-    <>
+    <div>
       <Popover>
         <div className="relative pt-6 px-4 sm:px-6 lg:px-8">
           <nav
@@ -36,21 +60,46 @@ const NavBar = () => {
               </div>
             </div>
             <div className="hidden md:block md:ml-10 md:pr-4 md:space-x-8">
-              {navigation.map((item) => (
-                <Link
-                  key={item.name}
-                  to={item.href}
-                  className="font-medium text-gray-500 hover:text-gray-900"
-                >
-                  {item.name}
-                </Link>
-              ))}
-              <Link
-                to="/login"
-                className="font-medium text-indigo-600 hover:text-indigo-500"
-              >
-                Log in
-              </Link>
+              {props.authenticated
+                ? navigation.map((item) => (
+                    <Link
+                      key={item.name}
+                      to={item.href}
+                      className="font-medium text-gray-500 hover:text-gray-900"
+                    >
+                      {item.name}
+                    </Link>
+                  ))
+                : unSignedNav.map((item) => (
+                    <Link
+                      key={item.name}
+                      to={item.href}
+                      className="font-medium text-gray-500 hover:text-gray-900"
+                    >
+                      {item.name}
+                    </Link>
+                  ))}
+              {}
+              {props.authenticated ? (
+                <span>
+                  <Link
+                    to="/logout"
+                    onClick={props.onLogout}
+                    className="font-medium text-indigo-600 hover:text-indigo-500"
+                  >
+                    Log out
+                  </Link>
+                </span>
+              ) : (
+                <span>
+                  <Link
+                    to="/login"
+                    className="font-medium text-indigo-600 hover:text-indigo-500"
+                  >
+                    Log in
+                  </Link>
+                </span>
+              )}
             </div>
           </nav>
         </div>
@@ -105,7 +154,7 @@ const NavBar = () => {
           </Popover.Panel>
         </Transition>
       </Popover>
-    </>
+    </div>
   );
 };
 

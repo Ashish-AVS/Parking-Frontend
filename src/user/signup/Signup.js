@@ -56,7 +56,8 @@ class SignupForm extends Component {
         this.state = {
             name: '',
             email: '',
-            password: ''
+            password: '',
+            role: ''
         }
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -103,6 +104,11 @@ class SignupForm extends Component {
                     <input type="password" name="password" 
                         className="form-control" placeholder="Password"
                         value={this.state.password} onChange={this.handleInputChange} required/>
+                </div>
+                <div className="form-item">
+                    <input type="text" name="role" 
+                        className="form-control" placeholder="Enter USER or WORKER only"
+                        value={this.state.role} onChange={this.handleInputChange} required/>
                 </div>
                 <div className="form-item">
                     <button type="submit" className="btn btn-block btn-primary" >Sign Up</button>

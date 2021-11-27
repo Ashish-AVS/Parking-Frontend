@@ -110,18 +110,6 @@ const filters = [
       { value: "sale", label: "Repair Check", checked: false },
     ],
   },
-  //   {
-  //     id: 'size',
-  //     name: 'Size',
-  //     options: [
-  //       { value: '2l', label: '2L', checked: false },
-  //       { value: '6l', label: '6L', checked: false },
-  //       { value: '12l', label: '12L', checked: false },
-  //       { value: '18l', label: '18L', checked: false },
-  //       { value: '20l', label: '20L', checked: false },
-  //       { value: '40l', label: '40L', checked: true },
-  //     ],
-  //   },
 ];
 
 function classNames(...classes) {
@@ -134,7 +122,6 @@ export default function BookSlot() {
   return (
     <div className="bg-white">
       <div>
-        {/* Mobile filter dialog */}
         <Transition.Root show={mobileFiltersOpen} as={Fragment}>
           <Dialog
             as="div"

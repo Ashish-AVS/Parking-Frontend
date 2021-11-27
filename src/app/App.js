@@ -25,6 +25,7 @@ import PaymentSuccess from "../components/BillPayment/PaymentSuccess";
 import AdminDashboard from "../Admin/AdminDashboard";
 import Dashboard from "../Admin/AdminDashboard";
 import HomePage from "../components/HomePage";
+import NavBar from "../container/Navigation";
 class App extends Component {
   constructor(props) {
     super(props);
@@ -75,20 +76,18 @@ class App extends Component {
     return (
       <div className="app">
         <div className="app-top-box">
-          <AppHeader
+          {/* <AppHeader
             authenticated={this.state.authenticated}
             onLogout={this.handleLogout}
+          /> */}
+          <NavBar
+            authenticated={this.state.authenticated}
+            onLogout={this.handleLogout}
+            role={this.state.currentUser}
           />
         </div>
         <div className="app-body">
           <Switch>
-            <Route exact path="/" component={Home}></Route>
-            <PrivateRoute
-              path="/profile"
-              authenticated={this.state.authenticated}
-              currentUser={this.state.currentUser}
-              component={Profile}
-            ></PrivateRoute>
             <Route
               path="/login"
               render={(props) => (
@@ -101,25 +100,36 @@ class App extends Component {
                 <Signup authenticated={this.state.authenticated} {...props} />
               )}
             ></Route>
-
-            {/* <Route path="/signup" element={<SignUp />} /> */}
-            <Route path="/parking-spaces" component={ParkingSpaces} />
-
-            <Route path="/worker-list" component={WorkerList} />
-            <Route path="/user-dashboard" component={Userdashboard} />
-            <Route path="/book-slot" component={BookSlot} />
-            {/* <Route path="/login" element={Login} /> */}
-            <Route path="/bill" component={BillDisplay} />
-            <Route path="/bill-paymentmode" component={Paymentmode} />
-            <Route path="/bill-paymentsuccess" component={PaymentSuccess} />
-            <Route path="/admin-dashboard" component={AdminDashboard} />
-            <Route path="/dashboard" component={Dashboard} />
-
-            <Route path="/" component={<HomePage />} />
             <Route
               path="/oauth2/redirect"
               component={OAuth2RedirectHandler}
             ></Route>
+            <PrivateRoute
+              path="/profile"
+              authenticated={this.state.authenticated}
+              currentUser={this.state.currentUser}
+              component={Profile}
+            ></PrivateRoute>
+            {/* <Route path="/signup" element={<SignUp />} /> */}
+
+            {this.state.authenticated && (
+              <div>
+                <Route path="/parking-spaces" component={ParkingSpaces} />
+
+                <Route path="/worker-list" component={WorkerList} />
+                <Route path="/user-dashboard" component={Userdashboard} />
+                <Route path="/book-slot" component={BookSlot} />
+                {/* <Route path="/login" element={Login} /> */}
+                <Route path="/bill" component={BillDisplay} />
+                <Route path="/bill-paymentmode" component={Paymentmode} />
+                <Route path="/bill-paymentsuccess" component={PaymentSuccess} />
+                <Route path="/admin-dashboard" component={AdminDashboard} />
+                <Route path="/dashboard" component={Dashboard} />
+                <Route exact path="/" component={HomePage} />
+              </div>
+            )}
+            <Route exact path="/" component={Home}></Route>
+
             <Route component={NotFound}></Route>
           </Switch>
         </div>

@@ -43,6 +43,7 @@ export function login(loginRequest) {
 }
 
 export function signup(signupRequest) {
+    console.log(signupRequest)
     return request({
         url: API_BASE_URL + "/auth/signup",
         method: 'POST',

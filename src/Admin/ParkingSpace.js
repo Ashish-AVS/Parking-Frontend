@@ -32,44 +32,40 @@ const ParkingSpaces = () => {
             </thead>
             <tbody>
               {rows.map((rows) => (
-                
-                  
-                    <tr key={rows.id}>
-                      <td class="px-4 py-3 ">{rows.space}</td>
-                      <td class="px-4 py-3">{rows.slot}</td>
-                      <td class="px-4 py-3">{rows.carsAlloted}</td>
-                      <td class="px-4 py-3 text-lg text-gray-900">
-                        {" "}
-                        <button
-                          type="submit"
-                          className="inline-flex justify-center py-1 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                        >
-                          Add Slot
-                        </button>{" "}
-                      </td>
-                      <td class="px-4 py-3 text-lg text-gray-900">
-                        {" "}
-                        <button
-                          type="submit"
-                          className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                        >
-                          Remove Slot
-                        </button>{" "}
-                      </td>
-                      <td class="px-4 py-3 text-lg text-gray-900">
-                        {" "}
-                        <button
-                          type="submit"
-                          className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                        >
-                          Remove Space
-                        </button>{" "}
-                      </td>
-                    </tr>
-                  
-                
+                <tr key={rows.id}>
+                  <td class="px-4 py-3 ">{rows.space}</td>
+                  <td class="px-4 py-3">{rows.slot}</td>
+                  <td class="px-4 py-3">{rows.carsAlloted}</td>
+                  <td class="px-4 py-3 text-lg text-gray-900">
+                    {" "}
+                    <button
+                      type="submit"
+                      className="inline-flex justify-center py-1 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    >
+                      Add Slot
+                    </button>{" "}
+                  </td>
+                  <td class="px-4 py-3 text-lg text-gray-900">
+                    {" "}
+                    <button
+                      type="submit"
+                      className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    >
+                      Remove Slot
+                    </button>{" "}
+                  </td>
+                  <td class="px-4 py-3 text-lg text-gray-900">
+                    {" "}
+                    <button
+                      type="submit"
+                      className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    >
+                      Remove Space
+                    </button>{" "}
+                  </td>
+                </tr>
               ))}
-               {/* <tr>
+              {/* <tr>
               <td class="px-4 py-3">A1</td>
               <td class="px-4 py-3">8 - 9</td>
               <td class="px-4 py-3">Car Wash</td>

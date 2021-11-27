@@ -1,6 +1,8 @@
 /* This example requires Tailwind CSS v2.0+ */
 import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
+import { Link, NavLink } from "react-router-dom";
+
 import { BellIcon, MenuIcon, XIcon } from '@heroicons/react/outline'
 
 const navigation = [
@@ -8,7 +10,7 @@ const navigation = [
   { name: 'Team', href: '#', current: false },
   { name: 'Projects', href: '#', current: false },
   { name: 'Calendar', href: '#', current: false },
-]
+] 
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
@@ -47,7 +49,9 @@ export default function DarkNav() {
                 </div>
                 <div className="hidden sm:block sm:ml-6">
                   <div className="flex space-x-4">
-                    {navigation.map((item) => (
+                  {this.props.authenticated ? (
+                    <div>
+                      {navigation.map((item) => (
                       <a
                         key={item.name}
                         href={item.href}
@@ -60,6 +64,32 @@ export default function DarkNav() {
                         {item.name}
                       </a>
                     ))}
+                <ul>
+                  <li>
+                    <NavLink to="/profile">Profile</NavLink>
+                  </li>
+                  <li>
+                    <NavLink to="/parking-spaces">Parking Spaces</NavLink>
+                  </li>
+                  <li>
+                    <NavLink to="/worker-list">Worker List</NavLink>
+                  </li>
+                  <li>
+                    <a onClick={this.props.onLogout}>Logout</a>
+                  </li>
+                </ul>
+                </div>
+              ) : (
+                <ul>
+                  <li>
+                    <NavLink to="/login">Login</NavLink>
+                  </li>
+                  <li>
+                    <NavLink to="/signup">Signup</NavLink>
+                  </li>
+                </ul>
+              )}
+                    
                   </div>
                 </div>
               </div>
