@@ -21,11 +21,16 @@ import Userdashboard from "../UserComponents/Userdashboard";
 import BookSlot from "../components/BookSlot/BookSlot";
 import BillDisplay from "../components/BillPayment/BillDisplay";
 import Paymentmode from "../components/BillPayment/Paymentmode";
+import WorkerDashboard from "../components/WorkerDashboard";
 import PaymentSuccess from "../components/BillPayment/PaymentSuccess";
 import AdminDashboard from "../Admin/AdminDashboard";
 import Dashboard from "../Admin/AdminDashboard";
 import HomePage from "../components/HomePage";
 import NavBar from "../container/Navigation";
+import OTPSignup from "../user/signup/OTPSignup";
+import StripePayment from '../components/StripePayment'
+
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -94,6 +99,7 @@ class App extends Component {
                 <Login authenticated={this.state.authenticated} {...props} />
               )}
             ></Route>
+             <Route path="/signupotp" component={OTPSignup} />
             <Route
               path="/signup"
               render={(props) => (
@@ -117,14 +123,24 @@ class App extends Component {
                 <Route path="/parking-spaces" component={ParkingSpaces} />
 
                 <Route path="/worker-list" component={WorkerList} />
-                <Route path="/user-dashboard" component={Userdashboard} />
+                {/* currentUser={this.state.currentUser} */}
+                <Route path="/user-dashboard" 
+                render={(props) => (
+                  <Userdashboard currentUser={this.state.currentUser} {...props} />
+                )} />
                 <Route path="/book-slot" component={BookSlot} />
                 {/* <Route path="/login" element={Login} /> */}
-                <Route path="/bill" component={BillDisplay} />
+                <Route path="/bill" 
+                 render={(props) => (
+                  <BillDisplay currentUser={this.state.currentUser} {...props} authed={true} />
+                )}
+                 />
                 <Route path="/bill-paymentmode" component={Paymentmode} />
                 <Route path="/bill-paymentsuccess" component={PaymentSuccess} />
                 <Route path="/admin-dashboard" component={AdminDashboard} />
+                <Route path="/worker-dashboard" component={WorkerDashboard} />
                 <Route path="/dashboard" component={Dashboard} />
+                <Route path="/pay" component={StripePayment} />
                 <Route exact path="/" component={HomePage} />
               </div>
             )}
@@ -147,3 +163,11 @@ class App extends Component {
 
 export default App;
 // https://material-tailwind.com/documentation/react/radioButton
+/**
+ * make a single specialisation for worker 
+ * and store id of worker when adding his service
+ * add cost to bill and save it
+ * 
+ * worker can create his oown account and add his specialisations 
+ * admin can delete the worker's account
+ */

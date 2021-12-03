@@ -12,6 +12,7 @@ import SlotList from "./SlotList";
 import DatePickers from "../DatePicker";
 import axios from "axios";
 import { ACCESS_TOKEN } from "../../constants";
+import DropDown from "./DropDown";
 
 const sortOptions = [
   { name: "Most Popular", href: "#", current: true },
@@ -46,6 +47,12 @@ export default function BookSlot() {
   const [listOfSlots, setListOfSlots] = useState([]);
   const [lots, setLots] = useState([]);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+  const [date, setDate] = useState();
+  const [filters, setFilters] = useState({checkIn: -1, checkOut: -1, date: -1, locationId: -1});
+  const [hours, setHoursConverted] = useState("");
+  const hourRef = useRef();
+
+
   useEffect(() => {
     axios({
       method: "GET",
@@ -64,7 +71,6 @@ export default function BookSlot() {
   }, []);
 
   const checkboxHandler = (e, id) => {
-   
     setListOfSlots((prevState) => {
       const newState = [...prevState];
       newState[id] = !newState[id];
@@ -72,8 +78,32 @@ export default function BookSlot() {
     });
     // console.log(listOfSlots)
   };
+  
+  const hourHandler = (e) => {
+      e.preventDefault();
+      const f = hourRef.current;
+      if(parseInt(f['checkIn'].value) >= parseInt(f['checkOut'].value)){
+        // alert(f['checkIn'].value >= f['checkOut'].value)
+          alert('Please enter valid checkin and checkout!!')
+          return;
+      }
+      const times = {
+        checkIn: f['checkIn'].value,
+        checkOut: f['checkOut'].value,
+      }
+      console.log(times);
+      console.log(date);
+      // setFilters({...times, date: date});
+      setFilters(prevState => {
+        return {...prevState, ...times, date: date}
+      })
+  }
 
-
+  const cityHandler = (id) => {
+    setFilters(prevState => {
+      return {...prevState, locationId: id}
+    })
+  }
   return (
     <div className="bg-white">
       <div>
@@ -152,7 +182,7 @@ export default function BookSlot() {
                 >
                   <Menu.Items className="origin-top-right absolute right-0 mt-2 w-40 rounded-md shadow-2xl bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
                     <div className="py-1">
-                      <DatePickers />
+                      <DatePickers setDates={setDate} />
                       {/* {sortOptions.map((option) => (
                         <Menu.Item key={option.name}>
                           {({ active }) => (
@@ -172,6 +202,55 @@ export default function BookSlot() {
                         </Menu.Item>
                       ))} */}
                     </div>
+                  </Menu.Items>
+                </Transition>
+              </Menu>
+
+              <Menu as="div" className="relative inline-block text-left">
+                <div>
+                  <Menu.Button className="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900">
+                    Enter Time
+                    <ChevronDownIcon
+                      className="flex-shrink-0 -mr-1 ml-1 h-5 w-5 text-gray-400 group-hover:text-gray-500"
+                      aria-hidden="true"
+                    />
+                  </Menu.Button>
+                </div>
+
+                <Transition
+                  as={Fragment}
+                  enter="transition ease-out duration-100"
+                  enterFrom="transform opacity-0 scale-95"
+                  enterTo="transform opacity-100 scale-100"
+                  leave="transition ease-in duration-75"
+                  leaveFrom="transform opacity-100 scale-100"
+                  leaveTo="transform opacity-0 scale-95"
+                >
+                  <Menu.Items className="origin-top-right absolute right-0 mt-2 w-40 rounded-md shadow-2xl bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
+                    <form name="hourFilter" ref={hourRef} onSubmit={hourHandler}>
+                      <div className="py-2">
+                        <label for="checkIn">Check In</label>
+                        <span> </span>
+                        <input
+                          type="number"
+                          name="checkIn"
+                          min="0"
+                          max="22"
+                          id="checkIn"
+                          className="px-2 py-2"
+                        />
+                        <label for="checkOut">Check Out</label>
+                        <input
+                          type="number"
+                          name="checkOut"
+                          min="1"
+                          max="23"
+                          id="checkOut"
+                          className="px-2 py-2"
+                        />
+                        <button type="submit">➡️</button>
+                      </div>
+                    </form>
                   </Menu.Items>
                 </Transition>
               </Menu>
@@ -204,90 +283,35 @@ export default function BookSlot() {
 
               <form className="hidden lg:block">
                 <h3 className="sr-only">Categories</h3>
-                {lots &&
-                  lots.map((lot) => (
-                    <div>
-                      {/* <div>
-                      <label class="inline-flex items-center mt-3">
-                        <input
-                          type="radio"
-                          class="form-radio h-5 w-5 text-orange-600"
-                        />
-                        <span class="ml-2 text-gray-700">{lot.location}</span>
-                      </label>
-                    </div> */}
-                      <Disclosure
-                        as="div"
-                        key={lot.id}
-                        className="border-b border-gray-200 py-6"
-                      >
-                        {({ open }) => (
-                          <div>
-                            <h3 className="-my-3 flow-root">
-                              <Disclosure.Button className="py-3 bg-white w-full flex items-center justify-between text-sm text-gray-400 hover:text-gray-500">
-                                <span className="font-medium text-gray-900">
-                                  {lot.location}
-                                </span>
-                                <span className="ml-6 flex items-center">
-                                  {open ? (
-                                    <MinusSmIcon
-                                      className="h-5 w-5"
-                                      aria-hidden="true"
-                                    />
-                                  ) : (
-                                    <PlusSmIcon
-                                      className="h-5 w-5"
-                                      aria-hidden="true"
-                                    />
-                                  )}
-                                </span>
-                              </Disclosure.Button>
-                            </h3>
-                            <Disclosure.Panel className="pt-6">
-                              <div className="space-y-4">
-                                {lot &&
-                                  lot.parkingSlotList &&
-                                  lot.parkingSlotList.map(
-                                    (option, optionIdx) => (
-                                      <div
-                                        key={option.value}
-                                        className="flex items-center"
-                                      >
-                                        <input
-                                          id={`filter-${lot.id}-${optionIdx}`}
-                                          name={`${lot.id}`}
-                                          defaultValue={option.id}
-                                          type="checkbox"
-                                          onChange={(e) =>
-                                            checkboxHandler(e, option.id)
-                                          }
-                                          defaultChecked={option.checked}
-                                          className="h-4 w-4 border-gray-300 rounded text-indigo-600 focus:ring-indigo-500"
-                                        />
-                                        <label
-                                          htmlFor={`filter-${lot.id}-${optionIdx}`}
-                                          className="ml-3 text-sm text-gray-600"
-                                        >
-                                          {option.id}
-                                        </label>
-                                      </div>
-                                    )
-                                  )}
-                              </div>
-                            </Disclosure.Panel>
-                          </div>
-                        )}
-                      </Disclosure>
-                    </div>
-                  ))}
-                <button type="submit">Submit</button>
+
+                <div class="block">
+                  <span class="text-gray-700">Cities</span>
+                  <div class="mt-2">
+                    {lots &&
+                      lots.map((el) => (
+                        <div>
+                          <label className="inline-flex items-center">
+                            <input
+                              type="radio"
+                              className="form-radio"
+                              name="cities"
+                              value={el.id}
+                              onChange={() => cityHandler(el.id)}
+                              // checked
+                            />
+                            <span className="ml-2">{el.location}</span>
+                          </label>
+                        </div>
+                      ))}
+                  </div>
+                </div>
               </form>
 
               {/* Product grid */}
               <div className="lg:col-span-3">
                 {/* Replace with your content */}
                 <div className="border-4 border-dashed border-gray-200 rounded-lg h-96 lg:h-full">
-                  <SlotList slots={listOfSlots}/>
+                  <SlotList filters={filters}/>
                 </div>
                 {/* /End replace */}
               </div>
@@ -380,3 +404,81 @@ export default function BookSlot() {
                   ))}
                 </form> */
 }
+
+// SLOT ID
+// {lots &&
+//   lots.map((lot) => (
+//     <div>
+//       {/* <div>
+//       <label class="inline-flex items-center mt-3">
+//         <input
+//           type="radio"
+//           class="form-radio h-5 w-5 text-orange-600"
+//         />
+//         <span class="ml-2 text-gray-700">{lot.location}</span>
+//       </label>
+//     </div> */}
+//       <Disclosure
+//         as="div"
+//         key={lot.id}
+//         className="border-b border-gray-200 py-6"
+//       >
+//         {({ open }) => (
+//           <div>
+//             <h3 className="-my-3 flow-root">
+//               <Disclosure.Button className="py-3 bg-white w-full flex items-center justify-between text-sm text-gray-400 hover:text-gray-500">
+//                 <span className="font-medium text-gray-900">
+//                   {lot.location}
+//                 </span>
+//                 <span className="ml-6 flex items-center">
+//                   {open ? (
+//                     <MinusSmIcon
+//                       className="h-5 w-5"
+//                       aria-hidden="true"
+//                     />
+//                   ) : (
+//                     <PlusSmIcon
+//                       className="h-5 w-5"
+//                       aria-hidden="true"
+//                     />
+//                   )}
+//                 </span>
+//               </Disclosure.Button>
+//             </h3>
+//             <Disclosure.Panel className="pt-6">
+//               <div className="space-y-4">
+//                 {lot &&
+//                   lot.parkingSlotList &&
+//                   lot.parkingSlotList.map(
+//                     (option, optionIdx) => (
+//                       <div
+//                         key={option.value}
+//                         className="flex items-center"
+//                       >
+//                         <input
+//                           id={`filter-${lot.id}-${optionIdx}`}
+//                           name={`${lot.id}`}
+//                           defaultValue={option.id}
+//                           type="checkbox"
+//                           onChange={(e) =>
+//                             checkboxHandler(e, option.id)
+//                           }
+//                           defaultChecked={option.checked}
+//                           className="h-4 w-4 border-gray-300 rounded text-indigo-600 focus:ring-indigo-500"
+//                         />
+//                         <label
+//                           htmlFor={`filter-${lot.id}-${optionIdx}`}
+//                           className="ml-3 text-sm text-gray-600"
+//                         >
+//                           {option.id}
+//                         </label>
+//                       </div>
+//                     )
+//                   )}
+//               </div>
+//             </Disclosure.Panel>
+//           </div>
+//         )}
+//       </Disclosure>
+//     </div>
+//   ))}

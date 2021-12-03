@@ -77,14 +77,15 @@ class SignupForm extends Component {
         event.preventDefault();   
 
         const signUpRequest = Object.assign({}, this.state);
-
-        signup(signUpRequest)
-        .then(response => {
-            Alert.success("You're successfully registered. Please login to continue!");
-            this.props.history.push("/login");
-        }).catch(error => {
-            Alert.error((error && error.message) || 'Oops! Something went wrong. Please try again!');            
-        });
+        localStorage.setItem("signUpRequest", JSON.stringify(signUpRequest));
+        this.props.history.push("/signupotp");
+        // signup(signUpRequest)
+        // .then(response => {
+        //     Alert.success("You're successfully registered. Please login to continue!");
+        //     this.props.history.push("/login");
+        // }).catch(error => {
+        //     Alert.error((error && error.message) || 'Oops! Something went wrong. Please try again!');            
+        // });
     }
 
     render() {

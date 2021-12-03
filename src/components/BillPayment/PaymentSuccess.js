@@ -1,5 +1,6 @@
 import { Checkmark } from "react-checkmark";
-import React from 'react'
+import React from "react";
+import ContactUs from '../../EmailUtil/email'
 const PaymentSuccess = () => {
   return (
     <div className="bg-gray-50 min-h-screen">
@@ -23,6 +24,7 @@ const PaymentSuccess = () => {
           <div className="ml-3 inline-flex rounded-md shadow"></div>
         </div>
       </div>
+      
     </div>
   );
 };
