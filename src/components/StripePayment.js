@@ -10,6 +10,7 @@ function StripePayment(props) {
   const [recieptURL, setRecieptURL] = React.useState();
   console.log(props);
   const amountRef = React.useRef();
+
   const fastagHandler = () => {
     const postData = {
       amount: amountRef.current.value,
@@ -23,7 +24,8 @@ function StripePayment(props) {
         },
       })
       .then((res) => {
-        Alert.success("Payment Done successfully!");
+        console.log("RESPONSE", res);
+        console.log("Reciept", res.data.receipt_url);
         setRecieptURL(res.data.receipt_url);
         axios
           .get(
@@ -34,27 +36,34 @@ function StripePayment(props) {
               },
             }
           )
-          .then((res) =>
-            Alert.success(
-              `Balance added successfully, your current balance is ${res.data.fastTag}`
-            )
-          );
+          .then((res) => console.log(res));
         console.log(res);
       });
   };
   async function handleToken(token) {
     console.log(token);
+    const data = {
+      amount: amountRef.current.value,
+      receiptEmail: props.email,
+    };
     await axios
-      .post("http://localhost:8080/api/payment/charge", "", {
+      .post("http://localhost:8080/api/payment/charge", data, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`,
           token: token.id,
-          amount: 500,
+          amount: amountRef.current.value,
           currency: "INR",
         },
       })
-      .then(() => {
-        alert("Payment Success");
+      .then((res) => {
+        console.log("LETS GOOOO", res);
+        console.log("LETS GOOOO PARSED", JSON.parse(res.data));
+        setRecieptURL(JSON.parse(res.data.receipt_url));
+        fastagHandler();
+        Alert.success("Payment Done successfully!");
+        Alert.success(
+          `Balance added successfully to your fastag`
+        );
       })
       .catch((error) => {
         Alert.success("Payment Done Successfully");
@@ -71,17 +80,17 @@ function StripePayment(props) {
           ref={amountRef}
         />
       </span>
-      <span onClick={fastagHandler}>
+      <span>
         <Stripe
           stripeKey="pk_test_51K2RXcSFlRY3Q4ax8De4mVN8l2URKt9jyiONWkUJbHSJ28aQvZ1bO6yEeoBMkocmYvSWU66DdZsswqvJBiREPzFq00H7iI6yqj"
           token={handleToken}
         />
       </span>
-      {
-        recieptURL ? <div>
-        <a href={recieptURL}>Click here to view your payment reciept</a>
-        </div> : null
-      }
+      {recieptURL ? (
+        <div>
+          <a href={recieptURL}>Click here to view your payment reciept</a>
+        </div>
+      ) : null}
     </div>
   );
 }

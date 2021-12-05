@@ -16,7 +16,7 @@ export default function BillDisplay(props) {
     (parseInt(val.filters.checkOut) - parseInt(val.filters.checkIn)) * 25
   );
   const [workerId, setWorkerId] = React.useState("");
-  console.log("PROPS", props);
+  console.log("Filters", val.filters);
   React.useEffect(() => {
     axios
       .get(`http://localhost:8080/parking/lot/${val.filters.locationId}`, {
@@ -47,7 +47,7 @@ export default function BillDisplay(props) {
           (parseInt(val.filters.checkOut) - parseInt(val.filters.checkIn))
     );
     setWorkerId((prevState) => {
-      return workerId + "," + prevState;
+      return workerId + "," + prevState
     });
   };
   const bookSlot = (slotCost) => {
@@ -160,10 +160,10 @@ export default function BillDisplay(props) {
                     labor.map((lab, i) => (
                       <div className="m-4">
                         {/* Labor Specialisations */}
-                        <div>{lab.workerName}</div>
-                        <div>{lab.email}</div>
-                        <div>{lab.phoneNumber}</div>
-                        <div>{lab.rating}</div>
+                        <div>Worker Name: {lab.workerName}</div>
+                        <div>Worker Email: {lab.email}</div>
+                        <div>Worker Phone Number: {lab.phoneNumber}</div>
+                        <div>Worker Rating: {lab.rating}</div>
                         {lab.specialisations &&
                           lab.specialisations.map((l) => (
                             <div>

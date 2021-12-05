@@ -22,11 +22,16 @@ export default function BookSlot(props) {
   const [lots, setLots] = useState([]);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [date, setDate] = useState();
-  const [filters, setFilters] = useState({checkIn: -1, checkOut: -1, date: -1, locationId: -1});
+  const [filters, setFilters] = useState({
+    checkIn: -1,
+    checkOut: -1,
+    date: -1,
+    locationId: -1,
+  });
   const [hours, setHoursConverted] = useState("");
   const hourRef = useRef();
 
-  console.log(props)
+  console.log(props);
   useEffect(() => {
     axios({
       method: "GET",
@@ -45,19 +50,23 @@ export default function BookSlot(props) {
   }, []);
 
   const waitLists = (lotId) => {
-    
     // localStorage.getItem()
-    console.log("ID", props.currentUser.id)
-    console.log("ID2", props.currentUser)
-    console.log("ID3", props.currentUser)
-    axios.get(`http://localhost:8080/parking/waitlist?userId=${props.currentUser.id}&lotId=${lotId}`, {
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`,
-      }
-    }).then(res => alert("ADDED TO WAITLIST!"))
-  }
+    console.log("ID", props.currentUser.id);
+    console.log("ID2", props.currentUser);
+    console.log("ID3", props.currentUser);
+    axios
+      .get(
+        `http://localhost:8080/parking/waitlist?userId=${props.currentUser.id}&lotId=${lotId}`,
+        {
+          headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`,
+          },
+        }
+      )
+      .then((res) => alert("ADDED TO WAITLIST!"));
+  };
 
   const checkboxHandler = (e, id) => {
     setListOfSlots((prevState) => {
@@ -67,32 +76,32 @@ export default function BookSlot(props) {
     });
     // console.log(listOfSlots)
   };
-  
+
   const hourHandler = (e) => {
-      e.preventDefault();
-      const f = hourRef.current;
-      if(parseInt(f['checkIn'].value) >= parseInt(f['checkOut'].value)){
-        // alert(f['checkIn'].value >= f['checkOut'].value)
-          alert('Please enter valid checkin and checkout!!')
-          return;
-      }
-      const times = {
-        checkIn: f['checkIn'].value,
-        checkOut: f['checkOut'].value,
-      }
-      console.log(times);
-      console.log(date);
-      // setFilters({...times, date: date});
-      setFilters(prevState => {
-        return {...prevState, ...times, date: date}
-      })
-  }
+    e.preventDefault();
+    const f = hourRef.current;
+    if (parseInt(f["checkIn"].value) >= parseInt(f["checkOut"].value)) {
+      // alert(f['checkIn'].value >= f['checkOut'].value)
+      alert("Please enter valid checkin and checkout!!");
+      return;
+    }
+    const times = {
+      checkIn: f["checkIn"].value,
+      checkOut: f["checkOut"].value,
+    };
+    console.log(times);
+    console.log(date);
+    // setFilters({...times, date: date});
+    setFilters((prevState) => {
+      return { ...prevState, ...times, date: date };
+    });
+  };
 
   const cityHandler = (id) => {
-    setFilters(prevState => {
-      return {...prevState, locationId: id}
-    })
-  }
+    setFilters((prevState) => {
+      return { ...prevState, locationId: id };
+    });
+  };
   return (
     <div className="bg-white">
       <div>
@@ -216,10 +225,13 @@ export default function BookSlot(props) {
                   leaveTo="transform opacity-0 scale-95"
                 >
                   <Menu.Items className="origin-top-right absolute right-0 mt-2 w-40 rounded-md shadow-2xl bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
-                    <form name="hourFilter" ref={hourRef} onSubmit={hourHandler}>
+                    <form
+                      name="hourFilter"
+                      ref={hourRef}
+                      onSubmit={hourHandler}
+                    >
                       <div className="py-2">
                         <label for="checkIn">Check In</label>
-                        <span> </span>
                         <input
                           type="number"
                           name="checkIn"
@@ -228,15 +240,17 @@ export default function BookSlot(props) {
                           id="checkIn"
                           className="px-2 py-2"
                         />
-                        <label for="checkOut">Check Out</label>
-                        <input
-                          type="number"
-                          name="checkOut"
-                          min="1"
-                          max="23"
-                          id="checkOut"
-                          className="px-2 py-2"
-                        />
+                        <div className="py-2">
+                          <label for="checkOut">Check Out</label>
+                          <input
+                            type="number"
+                            name="checkOut"
+                            min="1"
+                            max="23"
+                            id="checkOut"
+                            className="px-2 py-2"
+                          />
+                        </div>
                         <button type="submit">➡️</button>
                       </div>
                     </form>
@@ -300,11 +314,14 @@ export default function BookSlot(props) {
               <div className="lg:col-span-3">
                 {/* Replace with your content */}
                 <div className="border-4 border-dashed border-gray-200 rounded-lg h-96 lg:h-full">
-                  <SlotList filters={filters}/>
-                  
+                  <SlotList filters={filters} />
                 </div>
                 {/* /End replace */}
-                Cannot see your slot? <button onClick={() => waitLists(filters.locationId)}>Click here</button> to join waitlist for this parking lot
+                Cannot see your slot?{" "}
+                <button onClick={() => waitLists(filters.locationId)}>
+                  Click here
+                </button>{" "}
+                to join waitlist for this parking lot
               </div>
             </div>
           </section>

@@ -73,9 +73,6 @@ const UserData = () => {
                 <th className="px-4 py-3 border-2 border-light-blue-500 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">
                   Provider
                 </th>
-                <th className="px-4 py-3 border-2 border-light-blue-500 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">
-                  Edit Details
-                </th>
               </tr>
             </thead>
             <tbody>
