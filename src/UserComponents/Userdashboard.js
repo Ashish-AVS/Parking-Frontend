@@ -32,7 +32,20 @@ const Userdashboard = () => {
       })
       .catch((err) => console.log(err));
   }, []);
+  const changeHours = (str) => {
+    let st = str.charCodeAt(str.charAt(0)) - 48;
 
+    let et = str.charCodeAt(str.length - 1) - 48;
+    if (et > 23 && et <= 47) {
+      st -= 24;
+      et -= 24;
+    }
+    if (et > 47 && et <= 71) {
+      st -= 48;
+      et -= 48;
+    }
+    return st + " " + et;
+  };
   // const showWorkerRating = (services) => {
   //   if (services !== null) {
   //     let ids = services.split(",").map(Number);
@@ -102,7 +115,7 @@ const Userdashboard = () => {
                     <td className="px-4 py-3">{booking.slotId}</td>
                     <td className="px-4 py-3">{booking.date}</td>
                     <td className="px-4 py-3">{booking.dateOfBooking}</td>
-                    <td className="px-4 py-3">{booking.hours}</td>
+                    <td className="px-4 py-3">{changeHours(booking.hours)}</td>
                     {/* <td className="px-4 py-3">
                       {workerRating &&  workerRating.map((rating) => {
                           if(rating.id === booking.slotId){

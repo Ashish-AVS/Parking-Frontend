@@ -31,7 +31,7 @@ import OTPSignup from "../user/signup/OTPSignup";
 import StripePayment from '../components/StripePayment'
 import WorkerRating from "../components/WorkerRating";
 import UserData from "../Admin/UserData";
-
+import location from '../util/location'
 
 class App extends Component {
   constructor(props) {
@@ -81,6 +81,7 @@ class App extends Component {
     }
 
     return (
+      
       <div className="app">
         <div className="app-top-box">
           {/* <AppHeader
