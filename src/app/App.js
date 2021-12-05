@@ -29,6 +29,8 @@ import HomePage from "../components/HomePage";
 import NavBar from "../container/Navigation";
 import OTPSignup from "../user/signup/OTPSignup";
 import StripePayment from '../components/StripePayment'
+import WorkerRating from "../components/WorkerRating";
+import UserData from "../Admin/UserData";
 
 
 class App extends Component {
@@ -121,6 +123,7 @@ class App extends Component {
             {this.state.authenticated && (
               <div>
                 <Route path="/parking-spaces" component={ParkingSpaces} />
+                <Route path="/user-data" component={UserData} />
 
                 <Route path="/worker-list" component={WorkerList} />
                 {/* currentUser={this.state.currentUser} */}
@@ -128,7 +131,11 @@ class App extends Component {
                 render={(props) => (
                   <Userdashboard currentUser={this.state.currentUser} {...props} />
                 )} />
-                <Route path="/book-slot" component={BookSlot} />
+                <Route path="/book-slot" 
+                 render={(props) => (
+                  <BookSlot currentUser={this.state.currentUser} {...props} authed={true} />
+                )}
+                currentUser={this.state.currentUser}/>
                 {/* <Route path="/login" element={Login} /> */}
                 <Route path="/bill" 
                  render={(props) => (
@@ -136,12 +143,19 @@ class App extends Component {
                 )}
                  />
                 <Route path="/bill-paymentmode" component={Paymentmode} />
-                <Route path="/bill-paymentsuccess" component={PaymentSuccess} />
+                <Route path="/bill-paymentsuccess" 
+                 render={(props) => (
+                  <PaymentSuccess {...props} />
+                )}
+                />
+                 {/* <Route path="/bill-paymentsuccess" component={PaymentSuccess} /> */}
                 <Route path="/admin-dashboard" component={AdminDashboard} />
                 <Route path="/worker-dashboard" component={WorkerDashboard} />
                 <Route path="/dashboard" component={Dashboard} />
                 <Route path="/pay" component={StripePayment} />
+                <Route path="/rate/:services" component={WorkerRating} />
                 <Route exact path="/" component={HomePage} />
+                {/* role={this.state.currentUser} */}
               </div>
             )}
             <Route exact path="/" component={Home}></Route>

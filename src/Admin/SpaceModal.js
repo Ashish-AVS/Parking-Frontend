@@ -3,50 +3,15 @@ import React, { Fragment, useRef, useState, useEffect } from "react";
 import axios from "axios";
 import { Dialog, Transition } from "@headlessui/react";
 import { ExclamationIcon } from "@heroicons/react/outline";
-import { ACCESS_TOKEN } from "../../constants";
+import { ACCESS_TOKEN } from "../constants";
 import Alert from "react-s-alert";
-import emailjs, { send } from "emailjs-com";
 
-export default function Modal() {
+
+export default function SpaceModal() {
   const [open, setOpen] = useState(true);
   const [submitData, setSubmitData] = useState();
   const formRef = useRef();
   const cancelButtonRef = useRef(null);
-
-  const sendEmail = (creds) => {
-    const cform = formRef.current;
-    var templateParams = {
-      to_name: creds.name,
-      from_name: "Ashish from Car Parking",
-      message_html: `Your worker account has been created and here are your credentials: 
-      Name: ${creds.name}
-      email: ${creds.email}
-      password: ${creds.password}
-      role: ${creds.role}
-      specialityName: ${cform["specialisation"].value}
-      costOfSpeciality : ${cform["costOfSpecialisation"].value}
-      `,
-      to_email: creds.email,
-    };
-    console.log(JSON.parse(localStorage.getItem("signUpRequest")).email);
-    emailjs
-      .send(
-        "service_qxtm9vb",
-        "template_991y18o",
-        templateParams,
-        "user_6EQ7Z33fScvA2jBgbiP5i"
-      )
-      .then(
-        function (response) {
-          Alert.success("Email sent successfully to worker");
-          // setRes(response);
-          console.log("SUCCESS!", response.status, response.text);
-        },
-        function (error) {
-          console.log("FAILED...", error);
-        }
-      );
-  };
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -58,59 +23,14 @@ export default function Modal() {
       Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`,
     };
     const data = {
-      workerName: cform["workerName"].value,
-      email: cform["workerEmail"].value,
-      phoneNumber: cform["phoneNumber"].value,
-    };
-    const loginData = {
-      name: cform["workerName"].value,
-      email: cform["workerEmail"].value,
-      password: cform["workerPassword"].value,
-      role: "WORKER",
+      location: cform["location"].value,
+      city: cform["city"].value,
     };
     axios
-      .post("http://localhost:8080/auth/signup", loginData)
+      .post("http://localhost:8080/parking/add/lot", data, { headers: headers })
       .then((res) => {
-        Alert.success(
-          "Worker added successfully, and auth details have been sent to worker's email"
-        );
-        console.log("Worker Added", res);
-        axios
-          .post("http://localhost:8080/worker/add", data, { headers: headers })
-          .then((res) => {
-            setSubmitData(res);
-            axios
-              .put(
-                `http://localhost:8080/worker/${res.data.id}/addSpecialisation`,
-                {
-                  specialityName: cform["specialisation"].value,
-                  costOfSpeciality: cform["costOfSpecialisation"].value,
-                },
-                { headers: headers }
-              )
-              .then((res) => {
-                Alert.success("Specialisation Added");
-                console.log(res);
-                // sendEmail(loginData);
-              })
-              .catch((error) => console.log(error));
-            axios
-              .put(
-                `http://localhost:8080/worker/${res.data.id}/addParking/${cform["lot"].value}`,
-                {noth:"a"},
-                { headers: headers }
-              )
-              .then((res) => {
-                Alert.success("Added to lot");
-                console.log(res);
-                // sendEmail(loginData);
-              })
-              .catch((error) => console.log(error));
-            console.log(res);
-          })
-          .catch((error) => console.log(error));
-        sendEmail(loginData);
-      })
+        Alert.success(`New parking space opened at, ${cform["location"].value}  ${cform["city"].value}`)  
+        console.log(res)})
       .catch((error) => console.log(error));
   };
 
@@ -166,53 +86,24 @@ export default function Modal() {
                         as="h3"
                         className="text-lg leading-6 font-medium text-gray-900"
                       >
-                        Add Worker
+                        Add Parking Space
                       </Dialog.Title>
 
                       <div className="mt-2">
                         <p className="text-sm text-gray-500">
                           <div>
-                            <div>
+                          <div>
                               <div>
-                                <label>Worker Email</label>
+                                <label>City</label>
                               </div>
-                              <input type="email" name="workerEmail" />
+                              <input type="text" name="city" />
                             </div>
+
                             <div>
                               <div>
-                                <label>Worker Name</label>
+                                <label>Location</label>
                               </div>
-                              <input type="text" name="workerName" />
-                            </div>
-                            <div>
-                              <div>
-                                <label>Worker Password</label>
-                              </div>
-                              <input type="password" name="workerPassword" />
-                            </div>
-                            <div>
-                              <div>
-                                <label>Worker Phone Number</label>
-                              </div>
-                              <input type="text" name="phoneNumber" />
-                            </div>
-                            <div>
-                              <div>
-                                <label>Worker Specialisation</label>
-                              </div>
-                              <input type="text" name="specialisation" />
-                            </div>
-                            <div>
-                              <div>
-                                <label>Specialisation cost</label>
-                              </div>
-                              <input type="text" name="costOfSpecialisation" />
-                            </div>
-                            <div>
-                              <div>
-                                <label>Parking Space</label>
-                              </div>
-                              <input type="text" name="lot" />
+                              <input type="text" name="location" />
                             </div>
                           </div>
                         </p>
@@ -233,7 +124,7 @@ export default function Modal() {
                     className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
                     onClick={() => setOpen(false)}
                   >
-                    Add Worker
+                    Add Parking Space
                   </button>
                   <button
                     type="button"

@@ -12,38 +12,12 @@ import SlotList from "./SlotList";
 import DatePickers from "../DatePicker";
 import axios from "axios";
 import { ACCESS_TOKEN } from "../../constants";
-import DropDown from "./DropDown";
-
-const sortOptions = [
-  { name: "Most Popular", href: "#", current: true },
-  { name: "Best Rating", href: "#", current: false },
-  { name: "Newest", href: "#", current: false },
-  { name: "Price: Low to High", href: "#", current: false },
-  { name: "Price: High to Low", href: "#", current: false },
-];
-// const subCategories = [
-//   { name: 'Totes', href: '#' },
-//   { name: 'Backpacks', href: '#' },
-//   { name: 'Travel Bags', href: '#' },
-//   { name: 'Hip Bags', href: '#' },
-//   { name: 'Laptop Sleeves', href: '#' },
-// ]
-const filters = [
-  {
-    id: "category",
-    name: "Services",
-    options: [
-      { value: "new-arrivals", label: "Dry Wash", checked: false },
-      { value: "sale", label: "Repair Check", checked: false },
-    ],
-  },
-];
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function BookSlot() {
+export default function BookSlot(props) {
   const [listOfSlots, setListOfSlots] = useState([]);
   const [lots, setLots] = useState([]);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
@@ -52,7 +26,7 @@ export default function BookSlot() {
   const [hours, setHoursConverted] = useState("");
   const hourRef = useRef();
 
-
+  console.log(props)
   useEffect(() => {
     axios({
       method: "GET",
@@ -69,6 +43,21 @@ export default function BookSlot() {
       console.log(res.data);
     });
   }, []);
+
+  const waitLists = (lotId) => {
+    
+    // localStorage.getItem()
+    console.log("ID", props.currentUser.id)
+    console.log("ID2", props.currentUser)
+    console.log("ID3", props.currentUser)
+    axios.get(`http://localhost:8080/parking/waitlist?userId=${props.currentUser.id}&lotId=${lotId}`, {
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`,
+      }
+    }).then(res => alert("ADDED TO WAITLIST!"))
+  }
 
   const checkboxHandler = (e, id) => {
     setListOfSlots((prevState) => {
@@ -312,8 +301,10 @@ export default function BookSlot() {
                 {/* Replace with your content */}
                 <div className="border-4 border-dashed border-gray-200 rounded-lg h-96 lg:h-full">
                   <SlotList filters={filters}/>
+                  
                 </div>
                 {/* /End replace */}
+                Cannot see your slot? <button onClick={() => waitLists(filters.locationId)}>Click here</button> to join waitlist for this parking lot
               </div>
             </div>
           </section>

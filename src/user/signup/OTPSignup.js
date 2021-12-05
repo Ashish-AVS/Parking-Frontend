@@ -13,7 +13,7 @@ export default function OTPSignup() {
     var templateParams = {
       to_name: JSON.parse(localStorage.getItem("signUpRequest")).email,
       from_name: "avsashisha8@gmail.com",
-      message_html: `<div>${mailotp}</div>`,
+      message_html: `${mailotp}`,
       to_email: JSON.parse(localStorage.getItem("signUpRequest")).email
     };
     console.log(JSON.parse(localStorage.getItem("signUpRequest")).email)
@@ -26,6 +26,7 @@ export default function OTPSignup() {
       )
       .then(
         function (response) {
+          Alert.success("Check your entered email")
           console.log("SUCCESS!", response.status, response.text);
         },
         function (error) {

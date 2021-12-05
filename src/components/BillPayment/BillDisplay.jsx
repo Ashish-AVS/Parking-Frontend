@@ -3,6 +3,7 @@
 import { PaperClipIcon } from "@heroicons/react/solid";
 import React from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
 import Alert from "react-s-alert";
 import { ACCESS_TOKEN } from "../../constants";
 
@@ -11,7 +12,10 @@ export default function BillDisplay(props) {
   const [val, setVal] = React.useState(props.location.billProps);
   const servicesRef = React.useRef();
   const [labor, setLabor] = React.useState([]);
-  // const [totalCost, setTotalCost] = useState();
+  const [cost, setCost] = React.useState(
+    (parseInt(val.filters.checkOut) - parseInt(val.filters.checkIn)) * 25
+  );
+  const [workerId, setWorkerId] = React.useState("");
   console.log("PROPS", props);
   React.useEffect(() => {
     axios
@@ -27,19 +31,37 @@ export default function BillDisplay(props) {
       })
       .catch((err) => console.log(err));
   }, []);
-  const servicesHandler = () => {
+  const servicesHandler = (e) => {
+    e.preventDefault();
     const v = servicesRef.current;
-
-  }
-  const bookSlot = (cost) => {
+  };
+  const workerHandler = (e, workerId, costOfSpeciality) => {
+    e.preventDefault();
+    Alert.success("Added, " + costOfSpeciality);
+    const isChecked = e.target.value;
+    console.log(isChecked);
+    setCost(
+      (prevCost) =>
+        prevCost +
+        costOfSpeciality *
+          (parseInt(val.filters.checkOut) - parseInt(val.filters.checkIn))
+    );
+    setWorkerId((prevState) => {
+      return workerId + "," + prevState;
+    });
+  };
+  const bookSlot = (slotCost) => {
+    console.log("BOOKING", { cost: cost + slotCost, workers: workerId });
     axios
       .post(
-        `http://localhost:8080/parking/bookSlotId?hour=${val.hoursConverted}&lotId=${val.filters.locationId}&customerId=${props.currentUser.id}&slotId=${val.slotId}`,
+        `http://localhost:8080/parking/bookSlotId?lotId=${val.filters.locationId}&customerId=${props.currentUser.id}&slotId=${val.slotId}&cost=${cost + slotCost}&workerId=${workerId}`,
         {
-          cost: cost,
+         hours: val.hoursConverted
         },
         {
           headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Content-Type": "application/json",
             Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`,
           },
         }
@@ -57,9 +79,14 @@ export default function BillDisplay(props) {
     <div className="bg-white shadow overflow-hidden sm:rounded-lg">
       <div className="px-4 py-5 sm:px-6">
         <h3 className="text-lg leading-6 font-medium text-black-900">
-          CHARGES DUE XXrs
+          FastTag Balance: {props.currentUser.fastTag}
         </h3>
-        <p className="mt-1 max-w-2xl text-sm text-gray-500">Breakdown:</p>
+        <p className="mt-1 max-w-2xl text-sm text-gray-500">
+          Remaining Balance after booking:{" "}
+          {props.currentUser.fastTag - cost > 0
+            ? props.currentUser.fastTag - cost
+            : "Insufficient Funds"}
+        </p>
       </div>
       <div className="border-t border-gray-200">
         <dl>
@@ -86,11 +113,7 @@ export default function BillDisplay(props) {
             </dt>
             <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
               {" "}
-              {val
-                ? (parseInt(val.filters.checkOut) -
-                    parseInt(val.filters.checkIn)) *
-                  25
-                : null}
+              {val ? cost : null}
             </dd>
           </div>
           <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
@@ -134,26 +157,37 @@ export default function BillDisplay(props) {
                   ></label>
                   {console.log("OUT OF LOOP", labor)}
                   {labor &&
-                    labor.map(
-                      (lab, i) =>
-                        lab.specialisations &&
-                        lab.specialisations.map((l) => (
-                          <div>
-                            <label htmlFor={l.specialityName}>
-                              {l.specialityName} : {l.costOfSpeciality}
-                            </label>
-                            <input
-                              type="checkbox"
-                              id={l.specialityName}
-                              key={i}
-                              name={l.specialityName}
-                            />
-                            <button type="submit">Add Services</button>
-                          </div>
-                        ))
-                    )}
+                    labor.map((lab, i) => (
+                      <div className="m-4">
+                        {/* Labor Specialisations */}
+                        <div>{lab.workerName}</div>
+                        <div>{lab.email}</div>
+                        <div>{lab.phoneNumber}</div>
+                        <div>{lab.rating}</div>
+                        {lab.specialisations &&
+                          lab.specialisations.map((l) => (
+                            <div>
+                              <label htmlFor={l.specialityName}>
+                                {l.specialityName} : {l.costOfSpeciality}
+                              </label>
+                              <button
+                                onClick={(e) =>
+                                  workerHandler(e, lab.id, l.costOfSpeciality)
+                                }
+                              >
+                                Add
+                              </button>
+                            </div>
+                          ))}
+                      </div>
+                    ))}
                   {/* <input list="car-services" id="services" name="car-services" placeholder="Services"/> */}
-
+                  <button
+                    type="submit"
+                    className="ml 50 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  >
+                    Add Services
+                  </button>
                   <datalist id="car-services">
                     <option value=" Plumbing" />
                     <option value=" Taxi" />
@@ -170,53 +204,47 @@ export default function BillDisplay(props) {
               }
             </dd>
           </div>
-          {/* <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-            <dt className="text-sm font-medium text-gray-500">Attachments</dt>
-            <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-              <ul role="list" className="border border-gray-200 rounded-md divide-y divide-gray-200">
-                <li className="pl-3 pr-4 py-3 flex items-center justify-between text-sm">
-                  <div className="w-0 flex-1 flex items-center">
-                    <PaperClipIcon className="flex-shrink-0 h-5 w-5 text-gray-400" aria-hidden="true" />
-                    <span className="ml-2 flex-1 w-0 truncate">resume_back_end_developer.pdf</span>
-                  </div>
-                  <div className="ml-4 flex-shrink-0">
-                    <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">
-                      Download
-                    </a>
-                  </div>
-                </li>
-                <li className="pl-3 pr-4 py-3 flex items-center justify-between text-sm">
-                  <div className="w-0 flex-1 flex items-center">
-                    <PaperClipIcon className="flex-shrink-0 h-5 w-5 text-gray-400" aria-hidden="true" />
-                    <span className="ml-2 flex-1 w-0 truncate">coverletter_back_end_developer.pdf</span>
-                  </div>
-                  <div className="ml-4 flex-shrink-0">
-                    <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">
-                      Download
-                    </a>
-                  </div>
-                </li>
-              </ul>
-            </dd>
-          </div> */}
         </dl>
         <br />
-        <button
-          style={{
-            position: "relative",
-            left: "34%",
-          }}
-          onClick={() =>
-            bookSlot(
-              (parseInt(val.filters.checkOut) - parseInt(val.filters.checkIn)) *
-                25
-            )
-          }
-          type="submit"
-          className="ml 50 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-        >
-          Pay Charges
-        </button>
+        {cost > props.currentUser.fastTag ? (
+          <div
+            style={{
+              position: "relative",
+              left: "34%",
+            }}
+          >
+            Insufficient Funds, please add balance to your fastTag account
+          </div>
+        ) : (
+          <button
+            style={{
+              position: "relative",
+              left: "34%",
+            }}
+            onClick={() =>
+              bookSlot(
+                (parseInt(val.filters.checkOut) -
+                  parseInt(val.filters.checkIn)) *
+                  25
+              )
+            }
+            type="submit"
+            className="ml 50 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          >
+            <Link
+              to={{
+                pathname: "/bill-paymentsuccess",
+                billProps: {
+                  cost: cost,
+                  workerId: workerId
+                },
+              }}
+            >
+              Pay Charges
+            </Link>
+          </button>
+        )}
+
         <br></br>
       </div>
     </div>

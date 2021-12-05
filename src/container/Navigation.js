@@ -5,30 +5,28 @@ import { Link } from "react-router-dom";
 
 const NavBar = (props) => {
   let navigation = [];
-  
+
   if (props.role) {
-  if (props.role.role === "WORKER") {
-    navigation = [{ name: "Worker Dashboard", href: "/worker-dashboard" }];
-    console.log('I AM IN again')
+    if (props.role.role === "WORKER") {
+      navigation = [{ name: "Worker Dashboard", href: "/worker-dashboard" }];
+      console.log("I AM IN again");
+    }
+    else if (props.role.role === "ADMIN") {
+      navigation = [
+        { name: "Worker List", href: "/worker-list" },
+        { name: "Admin Dashboard", href: "/admin-dashboard" },
+        { name: "Parking Spaces", href: "/parking-spaces" },
+        { name: "Users Data", href: "/user-data" },
+      ];
+    } 
+    else {
+      navigation = [
+        { name: "Dashboard", href: "/user-dashboard" },
+        { name: "Book a Slot", href: "/book-slot" },
+        { name: "Profile", href: "/profile" },
+      ];
+    }
   }
-  if (props.role.role === "ADMIN") {
-    navigation = [
-      { name: "Worker List", href: "/worker-list" },
-      { name: "Admin Dashboard", href: "/admin-dashboard" },
-      { name: "Parking Spaces", href: "/parking-spaces" },
-    ];
-  }
-  else{
-    navigation = [
-      { name: "Dashboard", href: "/user-dashboard" },
-      { name: "Book a Slot", href: "/book-slot" },
-      { name: "Profile", href: "/profile" },
-
-    ];
-  }
-  } 
-
-  
 
   const unSignedNav = [
     // { name: "Login", href: "/login" },

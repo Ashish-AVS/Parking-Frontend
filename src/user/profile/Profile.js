@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import "./Profile.css";
+import {Link} from 'react-router-dom';
+import StripePayment from '../../components/StripePayment'
 
 class Profile extends Component {
   constructor(props) {
@@ -28,7 +30,10 @@ class Profile extends Component {
             </div>
             <div className="profile-name">
               <h2>{this.props.currentUser.name}</h2>
+              {/* <h2>Available Balance: ₹{this.props.currentUser.fastTag >= 0 ? this.props.currentUser.fastTag : 0}</h2> */}
+              <h2>Available Balance: ₹{this.props.currentUser.fastTag}</h2>
               <p className="profile-email">{this.props.currentUser.email}</p>
+              <div>Pay using Stripe <StripePayment email={this.props.currentUser.email} id={this.props.currentUser.id}/></div>
             </div>
           </div>
         </div>

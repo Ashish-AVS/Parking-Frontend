@@ -3,9 +3,9 @@ import axios from "axios";
 import { ACCESS_TOKEN } from "../constants";
 
 const showHoursUti = (date, hours) => {
-    let d = parseInt(date.substr(8));
-    // HAVE TO CONVERT THIS
-}
+  let d = parseInt(date.substr(8));
+  // HAVE TO CONVERT THIS
+};
 const Userdashboard = () => {
   const [rows, setRows] = useState([
     {
@@ -16,6 +16,7 @@ const Userdashboard = () => {
       id: 1,
     },
   ]);
+  const [workerRating, setWorkerRating] = useState([]);
   const [responseData, setResponseData] = useState();
 
   useEffect(() => {
@@ -31,12 +32,42 @@ const Userdashboard = () => {
       })
       .catch((err) => console.log(err));
   }, []);
+
+  // const showWorkerRating = (services) => {
+  //   if (services !== null) {
+  //     let ids = services.split(",").map(Number);
+  //     let finalRatings = [];
+  //     ids.map((id) => {
+  //       axios
+  //         .get(`http://localhost:8080/worker/`, {
+  //           headers: {
+  //             Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`,
+  //           },
+  //         })
+  //         asdadasasddas
+  //         .then((res) => {
+  //           finalRatings.push({
+  //             slotId: slotId,
+  //             name: res.data.workerName,
+  //             rating: res.data.rating,
+  //           });
+  //           console.log(res.data);
+  //         })
+  //         .catch((err) => console.log(err));
+  //     });
+  //     console.log("FRom rating", finalRatings);
+  //     setWorkerRating(prevState => [...prevState, ...finalRatings]);
+  //     return finalRatings;
+  //   }
+  //   let _ = [];
+  //   return _;
+  // };
   return (
     <section className="text-gray-600 body-font">
       <div className="container px-5 py-24 mx-auto">
         <div className="flex flex-col text-center w-full mb-20">
           <h1 className="sm:text-4xl text-3xl font-medium title-font mb-2 text-gray-900">
-            Hello {responseData && responseData['name']}
+            Hello {responseData && responseData["name"]}
           </h1>
         </div>
         <div className="lg:w-2/3 w-full mx-auto overflow-auto">
@@ -50,28 +81,44 @@ const Userdashboard = () => {
                   Slot ID
                 </th>
                 <th className="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">
-                  Date of Slot 
+                  Date of Slot
                 </th>
                 <th className="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">
-                  Date of Booking 
+                  Date of Booking
                 </th>
                 <th className="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">
                   Hours Booked
                 </th>
+                {/* <th className="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">
+                  Rate Worker
+                </th> */}
               </tr>
             </thead>
             <tbody>
-              {
-                responseData && responseData.bookings.map(booking => (
+              {responseData &&
+                responseData.bookings.map((booking) => (
                   <tr key={booking.id}>
-                     <td className="px-4 py-3">{booking.lotId}</td>
-                     <td className="px-4 py-3">{booking.slotId}</td>
-                     <td className="px-4 py-3">{booking.date}</td>
-                     <td className="px-4 py-3">{booking.dateOfBooking}</td>
-                     <td className="px-4 py-3">{booking.hours}</td>
+                    <td className="px-4 py-3">{booking.lotId}</td>
+                    <td className="px-4 py-3">{booking.slotId}</td>
+                    <td className="px-4 py-3">{booking.date}</td>
+                    <td className="px-4 py-3">{booking.dateOfBooking}</td>
+                    <td className="px-4 py-3">{booking.hours}</td>
+                    {/* <td className="px-4 py-3">
+                      {workerRating &&  workerRating.map((rating) => {
+                          if(rating.id === booking.slotId){
+                            return (
+                              <span>
+                          {alert("asdsd")}
+                          {rating.name}
+                          <br />
+                          {rating.rating}
+                        </span>
+                            )
+                          }
+                      })}
+                    </td> */}
                   </tr>
-                ))
-              }
+                ))}
               {/* {rows.map((rows) => (
                 <tr key={rows.id}>
                   <td className="px-4 py-3">{rows.bookingstatus}</td>
